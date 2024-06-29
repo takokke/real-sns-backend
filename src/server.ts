@@ -1,5 +1,5 @@
 import express from "express"
-// routing
+// // routing
 import userRouter from "./routes/users.js"
 import authRouter from "./routes/auth.js"
 import postRouter from "./routes/posts.js"
@@ -7,6 +7,12 @@ import postRouter from "./routes/posts.js"
 import mongoose from "mongoose"
 // dotenv導入
 import "dotenv/config"
+
+declare const process: {
+    env: {
+        MONGOURL: string
+    }
+}
 
 const app = express()
 const PORT = 3000
@@ -29,7 +35,7 @@ app.use("/api/auth", authRouter)
 app.use("/api/posts", postRouter)
 
 app.get("/", (req, res) => {
-    res.send("ホーム画面")
+    res.send("ホーム画面aaaaa")
 })
 
 app.listen(PORT, () => console.log("server start"))
