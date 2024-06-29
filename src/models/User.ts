@@ -1,9 +1,25 @@
-import mongoose from "mongoose"
+import mongoose,{ Document, Schema } from "mongoose"
 
 // mongoDBを使う可能性は低いが、ログイン機能を一から手作りするので勉強になりそう
 // DBスキーマをノートにとる
 
-const UserSchema = new mongoose.Schema(
+interface IUser extends Document {
+    username: string;
+    email: string;
+    password: string;
+    profilePicture?: string;
+    coverPicture?: string;
+    followers: mongoose.Types.ObjectId[];
+    followings: mongoose.Types.ObjectId[];
+    isAdmin?: boolean;
+    desc?: string;
+    city?: string;
+    createdAt?: Date;
+    updatedAt?: Date;
+    _doc?: any; // _docプロパティを追加
+}
+
+const UserSchema: Schema<IUser> = new mongoose.Schema(
     {
         username: {
             type: String,
@@ -33,11 +49,11 @@ const UserSchema = new mongoose.Schema(
             default: ""
         },
         followers: {
-            type: Array,
+            type: [{ type: Schema.Types.ObjectId, ref: 'user' }],
             default: []
         },
         followings: {
-            type: Array,
+            type: [{ type: Schema.Types.ObjectId, ref: 'user' }],
             default: []
         },
         isAdmin: {

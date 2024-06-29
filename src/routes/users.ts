@@ -4,6 +4,11 @@ import bcrypt from "bcrypt"
 
 const router = express.Router()
 
+// 接続チェック
+router.get("/", async (req, res) => {
+    return res.send("usersのAPI11です")
+})
+
 // ユーザ更新
 router.put("/:id", async (req, res) => {
     if(req.body.userId === req.params.id || req.body.isAdmin) {
@@ -41,8 +46,11 @@ router.get("/:id", async (req, res) => {
         const user = await User.findById(req.params.id)
         // 分割代入
         // パスワードと更新日を省く
-        const { password, updatedAt, ...other } = user._doc //_docはmongooseで取得したデータのプロパティ
-        res.status(200).json(other)
+        if (user !== null) {
+            const { password, updatedAt, ...other } = user._doc //_docはmongooseで取得したデータのプロパティ
+            res.status(200).json(other)
+        }
+       
     } catch (err) {
         return res.status(500).json(err)
     }
@@ -57,7 +65,7 @@ router.put("/:id/follow", async (req, res) => {
 
             const followedUser = await User.findById(req.params.id)
             const currentUser = await User.findById(req.body.userId)
-            if (!followedUser.followers.includes(req.body.userId)) {
+            if (followedUser !== null && currentUser !== null && !followedUser.followers.includes(req.body.userId)) {
                 await followedUser.updateOne({
                     $push: {
                         followers: req.body.userId
@@ -90,7 +98,7 @@ router.put("/:id/unfollow", async (req, res) => {
             // フォローするユーザー
             const currentUser = await User.findById(req.body.userId)
             // フォロワーに存在したら
-            if (unfollowedUser.followers.includes(req.body.userId)) {
+            if (unfollowedUser !== null && currentUser !== null && unfollowedUser.followers.includes(req.body.userId)) {
                 await unfollowedUser.updateOne({
                     $pull: {
                         followers: req.body.userId
