@@ -35,7 +35,7 @@ app.use("/api/auth", authRouter)
 app.use("/api/posts", postRouter)
 
 app.get("/", (req, res) => {
-    res.send("ホーム画面aaaaa")
+    res.send("ホーム画面")
 })
 
 app.listen(PORT, () => console.log("server start"))
